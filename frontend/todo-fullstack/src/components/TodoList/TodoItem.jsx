@@ -26,6 +26,11 @@ export default function TodoItem({ todo, setTodos }) {
 			const response = await fetch(`http://localhost:4000/api/todos/${id}`, {
 				method: "DELETE",
 			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+
 			setTodos((prev) => prev.filter((todo) => todo._id !== id));
 		} catch (error) {
 			console.log(error);
@@ -44,6 +49,10 @@ export default function TodoItem({ todo, setTodos }) {
 				},
 				body: JSON.stringify({ title: todoInput }),
 			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
 
 			const data = await response.json();
 

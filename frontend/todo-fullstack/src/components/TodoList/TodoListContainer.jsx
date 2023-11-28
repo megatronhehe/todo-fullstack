@@ -20,6 +20,11 @@ export default function TodoListContainer({ children }) {
 				},
 				body: JSON.stringify({ title: todoInput, isDone: false }),
 			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+
 			const data = await response.json();
 
 			setTodoInput("");
@@ -39,10 +44,10 @@ export default function TodoListContainer({ children }) {
 					Create Todo
 				</label>
 				<input
-					onChange={(e) => setTodoInput(e.target.value)}
 					id="title"
 					name="title"
 					type="text"
+					onChange={(e) => setTodoInput(e.target.value)}
 					value={todoInput}
 					className="w-2/3 px-3 py-1 border rounded-lg outline-none"
 				/>
