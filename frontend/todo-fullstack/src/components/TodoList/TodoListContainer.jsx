@@ -34,7 +34,7 @@ export default function TodoListContainer({ children }) {
 	return (
 		<section className="p-4">
 			<h2 className="pb-4 mb-4 border-b">Todos</h2>
-			<div className="flex items-center gap-2 p-2 mb-4 border rounded-xl">
+			<form className="flex items-center gap-2 p-2 mb-4 border rounded-xl">
 				<label htmlFor="title" className="w-1/3">
 					Create Todo
 				</label>
@@ -48,12 +48,15 @@ export default function TodoListContainer({ children }) {
 				/>
 				<button
 					disabled={todoInput.length < 1 || isCreating === true}
-					onClick={createTodo}
+					onClick={(e) => {
+						e.preventDefault();
+						createTodo();
+					}}
 					className="p-2 border rounded-md"
 				>
 					{isCreating ? <CgSpinner className="animate-spn" /> : <CgMathPlus />}
 				</button>
-			</div>
+			</form>
 			{children}
 		</section>
 	);
