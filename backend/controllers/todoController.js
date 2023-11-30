@@ -33,7 +33,19 @@ const getTodo = async (req, res) => {
 
 // CREATE new todo
 const createTodo = async (req, res) => {
+	let emptyFields = [];
+
 	const { title, isDone } = req.body;
+
+	if (!title) {
+		emptyFields.push("title");
+	}
+
+	if (emptyFields.length > 0) {
+		return res
+			.status(400)
+			.json({ error: "fields must be filled", emptyFields });
+	}
 
 	try {
 		const todo = await Todo.create({ title, isDone });

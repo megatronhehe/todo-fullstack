@@ -9,8 +9,10 @@ export default function TodoListContainer({ children }) {
 
 	const [todoInput, setTodoInput] = useState("");
 	const [isCreating, setIsCreating] = useState(false);
+	const [emptyFields, setEmptyFields] = useState([]);
 
 	const createTodo = async () => {
+		setEmptyFields([]);
 		setIsCreating(true);
 		try {
 			const response = await fetch("http://localhost:4000/api/todos/", {
@@ -21,11 +23,14 @@ export default function TodoListContainer({ children }) {
 				body: JSON.stringify({ title: todoInput, isDone: false }),
 			});
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
 			const data = await response.json();
+
+			if (!response.ok) {
+				setEmptyFields(data.emptyFields);
+				throw new Error(
+					`HTTP error! Status: ${response.status} - ${data.error}`
+				);
+			}
 
 			setTodoInput("");
 			setTodos((prev) => [data, ...prev]);
@@ -49,10 +54,12 @@ export default function TodoListContainer({ children }) {
 					type="text"
 					onChange={(e) => setTodoInput(e.target.value)}
 					value={todoInput}
-					className="w-2/3 px-3 py-1 border rounded-lg outline-none"
+					className={`w-2/3 px-3 py-1 border rounded-lg outline-none ${
+						emptyFields.includes("title") ? "border-red-400" : ""
+					}`}
 				/>
 				<button
-					disabled={todoInput.length < 1 || isCreating === true}
+					// disabled={todoInput.length < 1 || isCreating === true}
 					onClick={(e) => {
 						e.preventDefault();
 						createTodo();
