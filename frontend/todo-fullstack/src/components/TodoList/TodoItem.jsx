@@ -4,7 +4,7 @@ import { CgSpinner } from "react-icons/cg";
 
 import { PiNotePencil, PiX, PiXCircle, PiCheckCircle } from "react-icons/pi";
 
-import { IoSquareOutline, IoCheckbox } from "react-icons/io5";
+import { IoSquareOutline, IoCheckbox, IoTrashBin } from "react-icons/io5";
 
 export default function TodoItem({ todo, setTodos }) {
 	const { _id, title, isDone } = todo;
@@ -111,7 +111,11 @@ export default function TodoItem({ todo, setTodos }) {
 					onClick={() => toggleIsDone(_id)}
 					className="text-xl text-gray-300"
 				>
-					{isDone ? <IoCheckbox /> : <IoSquareOutline />}
+					{isDone ? (
+						<IoCheckbox className="text-green-300" />
+					) : (
+						<IoSquareOutline />
+					)}
 				</button>
 
 				<input
@@ -119,15 +123,19 @@ export default function TodoItem({ todo, setTodos }) {
 					disabled={toggleEdit === false}
 					onChange={(e) => setTodoInput(e.target.value)}
 					value={todoInput}
-					className={`py-1 pl-3 rounded-lg outline-none ${
+					className={`py-1 pl-2 ml-1 rounded-lg outline-none ${
 						toggleEdit ? "bg-gray-100" : "bg-white"
 					}`}
 				/>
 			</div>
-			<ul className="flex items-center gap-2">
+			<ul className="flex items-center gap-2 text-xl text-gray-400">
 				{toggleEdit && (
 					<li>
-						<button disabled={isEditing} onClick={() => updateTodo(_id)}>
+						<button
+							disabled={isEditing}
+							onClick={() => updateTodo(_id)}
+							className="text-green-300"
+						>
 							<PiCheckCircle />
 						</button>
 					</li>
@@ -147,8 +155,9 @@ export default function TodoItem({ todo, setTodos }) {
 						<button
 							disabled={isDeleting === true}
 							onClick={() => deleteTodo(_id)}
+							className="text-red-300"
 						>
-							<PiX />
+							<IoTrashBin />
 						</button>
 					)}
 				</li>
