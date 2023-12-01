@@ -4,8 +4,10 @@ import { CgSpinner } from "react-icons/cg";
 
 import { PiNotePencil, PiX, PiXCircle, PiCheckCircle } from "react-icons/pi";
 
+import { IoSquareOutline, IoCheckbox } from "react-icons/io5";
+
 export default function TodoItem({ todo, setTodos }) {
-	const { _id, title } = todo;
+	const { _id, title, isDone } = todo;
 
 	const [todoInput, setTodoInput] = useState(title);
 
@@ -69,18 +71,59 @@ export default function TodoItem({ todo, setTodos }) {
 		}
 	};
 
+	const toggleIsDone = async (id) => {
+		setIsEditing(true);
+		try {
+			const response = await fetch(`http://localhost:4000/api/todos/${id}`, {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ isDone: !isDone }),
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+
+			const data = await response.json();
+
+			setTodos((prev) =>
+				prev.map((todo) =>
+					todo._id === id ? { ...todo, isDone: !isDone } : todo
+				)
+			);
+			setToggleEdit(false);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsEditing(false);
+		}
+	};
+
 	return (
 		<li
 			key={_id}
-			className="flex items-center justify-between py-1 pr-4 border rounded-xl"
+			className="flex items-center justify-between p-1 pr-4 overflow-hidden border rounded-xl"
 		>
-			<input
-				type="text"
-				disabled={toggleEdit === false}
-				onChange={(e) => setTodoInput(e.target.value)}
-				value={todoInput}
-				className="py-1 pl-4"
-			/>
+			<div className="flex items-center ml-2">
+				<button
+					onClick={() => toggleIsDone(_id)}
+					className="text-xl text-gray-300"
+				>
+					{isDone ? <IoCheckbox /> : <IoSquareOutline />}
+				</button>
+
+				<input
+					type="text"
+					disabled={toggleEdit === false}
+					onChange={(e) => setTodoInput(e.target.value)}
+					value={todoInput}
+					className={`py-1 pl-3 rounded-lg outline-none ${
+						toggleEdit ? "bg-gray-100" : "bg-white"
+					}`}
+				/>
+			</div>
 			<ul className="flex items-center gap-2">
 				{toggleEdit && (
 					<li>
