@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { deleteTodoAPI, updateTodoAPI } from "../../api/todosAPI";
+import {
+	deleteTodoAPI,
+	updateTodoAPI,
+	toggleIsDoneAPI,
+} from "../../api/todosAPI";
 
 import { CgSpinner } from "react-icons/cg";
 import { PiNotePencil, PiXCircle, PiCheckCircle } from "react-icons/pi";
@@ -8,12 +12,9 @@ import { IoSquareOutline, IoCheckbox, IoTrashBin } from "react-icons/io5";
 
 export default function TodoItem({ todo, setTodos }) {
 	const { _id, title, isDone } = todo;
-
 	const [todoInput, setTodoInput] = useState(title);
-
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
-
 	const [toggleEdit, setToggleEdit] = useState(false);
 
 	useEffect(() => {
@@ -28,7 +29,7 @@ export default function TodoItem({ todo, setTodos }) {
 			await deleteTodoAPI(id);
 			setTodos((prev) => prev.filter((todo) => todo._id !== id));
 		} catch (error) {
-			console.log(error.message);
+			alert(error.message);
 		} finally {
 			setIsDeleting(false);
 		}
@@ -45,7 +46,7 @@ export default function TodoItem({ todo, setTodos }) {
 			);
 			setToggleEdit(false);
 		} catch (error) {
-			console.log(error);
+			alert(error.message);
 		} finally {
 			setIsEditing(false);
 		}
@@ -54,20 +55,7 @@ export default function TodoItem({ todo, setTodos }) {
 	const toggleIsDone = async (id) => {
 		setIsEditing(true);
 		try {
-			const response = await fetch(`http://localhost:4000/api/todos/${id}`, {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ isDone: !isDone }),
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
-			const data = await response.json();
-
+			await toggleIsDoneAPI(id, isDone);
 			setTodos((prev) =>
 				prev.map((todo) =>
 					todo._id === id ? { ...todo, isDone: !isDone } : todo
@@ -75,7 +63,7 @@ export default function TodoItem({ todo, setTodos }) {
 			);
 			setToggleEdit(false);
 		} catch (error) {
-			console.log(error);
+			alert(error.message);
 		} finally {
 			setIsEditing(false);
 		}

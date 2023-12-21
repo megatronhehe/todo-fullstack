@@ -35,7 +35,7 @@ export default function TodoListContainer({ children }) {
 			setTodoInput("");
 			setTodos((prev) => [data, ...prev]);
 		} catch (error) {
-			console.log(error);
+			alert(error.message);
 		} finally {
 			setIsCreating(false);
 		}
