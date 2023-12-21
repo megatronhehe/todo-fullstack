@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+
+import AuthContext from "../../context/AuthContext";
 
 import { login } from "../../api/authAPI";
 
 export default function LoginSection({ setToggleAuthModal }) {
+	const { setUser } = useContext(AuthContext);
 	const [loginForm, setLoginForm] = useState({
 		email: "",
 		password: "",
@@ -17,7 +20,7 @@ export default function LoginSection({ setToggleAuthModal }) {
 		e.preventDefault();
 		try {
 			const data = await login(loginForm.email, loginForm.password);
-			console.log(data);
+			setUser(data);
 			setToggleAuthModal(false);
 		} catch (error) {
 			console.log(error.message);
