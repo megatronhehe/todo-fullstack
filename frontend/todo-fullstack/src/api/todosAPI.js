@@ -32,4 +32,26 @@ async function deleteTodoAPI(id) {
 	}
 }
 
-export { fetchTodos, deleteTodoAPI };
+async function updateTodoAPI(id, input) {
+	try {
+		const response = await fetch(`http://localhost:4000/api/todos/${id}`, {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ title: input }),
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+
+		const data = await response.json();
+
+		return data;
+	} catch (error) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
+}
+
+export { fetchTodos, deleteTodoAPI, updateTodoAPI };

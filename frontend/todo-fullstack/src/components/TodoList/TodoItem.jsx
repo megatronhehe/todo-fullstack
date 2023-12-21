@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { deleteTodoAPI } from "../../api/todosAPI";
+import { deleteTodoAPI, updateTodoAPI } from "../../api/todosAPI";
 
 import { CgSpinner } from "react-icons/cg";
 import { PiNotePencil, PiXCircle, PiCheckCircle } from "react-icons/pi";
@@ -37,20 +37,7 @@ export default function TodoItem({ todo, setTodos }) {
 	const updateTodo = async (id) => {
 		setIsEditing(true);
 		try {
-			const response = await fetch(`http://localhost:4000/api/todos/${id}`, {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ title: todoInput }),
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
-			const data = await response.json();
-
+			await updateTodoAPI(id, todoInput);
 			setTodos((prev) =>
 				prev.map((todo) =>
 					todo._id === id ? { ...todo, title: todoInput } : todo
