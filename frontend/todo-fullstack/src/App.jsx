@@ -3,6 +3,7 @@ import Main from "./components/Main";
 import Container from "./components/Container";
 import Navbar from "./components/Navbar";
 import TodoList from "./components/TodoList/TodoList";
+import AuthModal from "./components/AuthModal/AuthModal";
 
 function App() {
 	return (
