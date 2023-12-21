@@ -1,41 +1,32 @@
 import React, { useEffect, useState } from "react";
 
 import TodosContext from "./TodosContext";
+import { fetchTodos } from "../api/todosAPI";
 
 export default function TodosContextProvider({ children }) {
 	const [todos, setTodos] = useState([]);
-	const [isLoading, setIsLoading] = useState({ fetching: true });
+	const [isLoading, setIsLoading] = useState(true);
 	const [errorMsg, setErrorMsg] = useState("");
+	const [flipBool, setFlipBool] = useState(false);
 
-	const [refetch, setRefetch] = useState(false);
+	function refetchFunc() {
+		setFlipBool((prev) => !prev);
+	}
 
 	useEffect(() => {
-		fetchTodo();
-	}, [refetch]);
-
-	const refetchFunc = () => {
-		setRefetch((prev) => !prev);
-	};
-
-	const fetchTodo = async () => {
-		setIsLoading((prev) => ({ ...prev, fetching: true }));
-		setErrorMsg("");
-		try {
-			const response = await fetch("http://localhost:4000/api/todos/");
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
+		async function fetchData() {
+			setIsLoading(true);
+			try {
+				const data = await fetchTodos();
+				setTodos(data);
+			} catch (error) {
+				setErrorMsg(error.message);
+			} finally {
+				setIsLoading(false);
 			}
-
-			const data = await response.json();
-
-			setTodos(data);
-		} catch (error) {
-			setErrorMsg(`${error.message}`);
-		} finally {
-			setIsLoading((prev) => ({ ...prev, fetching: false }));
 		}
-	};
+		fetchData();
+	}, [flipBool]);
 
 	return (
 		<TodosContext.Provider
