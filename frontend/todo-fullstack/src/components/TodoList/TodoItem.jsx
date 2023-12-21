@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+import { deleteTodoAPI } from "../../api/todosAPI";
+
 import { CgSpinner } from "react-icons/cg";
-
-import { PiNotePencil, PiX, PiXCircle, PiCheckCircle } from "react-icons/pi";
-
+import { PiNotePencil, PiXCircle, PiCheckCircle } from "react-icons/pi";
 import { IoSquareOutline, IoCheckbox, IoTrashBin } from "react-icons/io5";
 
 export default function TodoItem({ todo, setTodos }) {
@@ -22,24 +22,17 @@ export default function TodoItem({ todo, setTodos }) {
 		}
 	}, [toggleEdit]);
 
-	const deleteTodo = async (id) => {
+	async function deleteTodo(id) {
 		setIsDeleting(true);
 		try {
-			const response = await fetch(`http://localhost:4000/api/todos/${id}`, {
-				method: "DELETE",
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
+			await deleteTodoAPI(id);
 			setTodos((prev) => prev.filter((todo) => todo._id !== id));
 		} catch (error) {
-			console.log(error);
+			console.log(error.message);
 		} finally {
 			setIsDeleting(false);
 		}
-	};
+	}
 
 	const updateTodo = async (id) => {
 		setIsEditing(true);
